@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -38,4 +39,33 @@ func Save(cfg Config) error {
 	}
 
 	return os.WriteFile(path, data, 0600)
+}
+
+func Load() (Config, error) {
+	var cfg Config
+
+	path, err := configPath()
+	if err != nil {
+		return cfg, err
+	}
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			cfg.APIURL = "http://localhost:8080"
+			return cfg, nil
+		}
+		return cfg, err
+	}
+
+	err = json.Unmarshal(data, &cfg)
+	if err != nil {
+		return cfg, err
+	}
+
+	if cfg.APIURL == "" {
+		cfg.APIURL = "http://localhost:8080"
+	}
+
+	return cfg, nil
 }
