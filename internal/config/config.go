@@ -1,6 +1,7 @@
 package config
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -23,4 +24,18 @@ func configPath() (string, error) {
 	}
 
 	return filepath.Join(dir, "config.json"), nil
+}
+
+func Save(cfg Config) error {
+	path, err := configPath()
+	if err != nil {
+		return err
+	}
+
+	data, err := json.MarshalIndent(cfg, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(path, data, 0600)
 }
