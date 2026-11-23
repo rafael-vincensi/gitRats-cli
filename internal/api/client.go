@@ -221,7 +221,7 @@ func (c *Client) DoMultipartJSON(endpoint string, jsonPayload any, fileField, fi
 			return fmt.Errorf("API error (%d): %s", resp.StatusCode, apiErr.Message)
 		}
 		return fmt.Errorf("HTTP error %d", resp.StatusCode)
-	}gi
+	}
 
 	if responseTarget != nil {
 		return json.Unmarshal(respBytes, responseTarget)
