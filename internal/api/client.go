@@ -7,6 +7,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"net/textproto"
 	"os"
 	"path/filepath"
 	"time"
@@ -107,6 +108,7 @@ func (c *Client) DoMultipart(endpoint string, fields map[string]string, fileFiel
 	if err != nil {
 		return err
 	}
+
 	if _, err := io.Copy(part, file); err != nil {
 		return err
 	}
@@ -114,10 +116,12 @@ func (c *Client) DoMultipart(endpoint string, fields map[string]string, fileFiel
 	if err := writer.Close(); err != nil {
 		return err
 	}
+
 	req, err := http.NewRequest("POST", c.BaseURL+endpoint, &body)
 	if err != nil {
 		return err
 	}
+
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 	if c.Token != "" {
 		req.Header.Set("Authorization", "Bearer "+c.Token)
@@ -142,6 +146,82 @@ func (c *Client) DoMultipart(endpoint string, fields map[string]string, fileFiel
 		}
 		return fmt.Errorf("HTTP error %d", resp.StatusCode)
 	}
+
+	if responseTarget != nil {
+		return json.Unmarshal(respBytes, responseTarget)
+	}
+	return nil
+}
+
+func (c *Client) DoMultipartJSON(endpoint string, jsonPayload any, fileField, filePath string, responseTarget any) error {
+	var body bytes.Buffer
+	writer := multipart.NewWriter(&body)
+
+	jsonBytes, err := json.Marshal(jsonPayload)
+	if err != nil {
+		return err
+	}
+
+	h := make(textproto.MIMEHeader)
+	h.Set("Content-Disposition", `form-data; name="data"`)
+	h.Set("Content-Type", "application/json")
+
+	jsonPart, err := writer.CreatePart(h)
+	if err != nil {
+		return err
+	}
+	if _, err := jsonPart.Write(jsonBytes); err != nil {
+		return err
+	}
+
+	file, err := os.Open(filePath)
+	if err != nil {
+		return fmt.Errorf("failed to open file: %w", err)
+	}
+	defer file.Close()
+
+	part, err := writer.CreateFormFile(fileField, filepath.Base(filePath))
+	if err != nil {
+		return err
+	}
+
+	if _, err := io.Copy(part, file); err != nil {
+		return err
+	}
+
+	if err := writer.Close(); err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("POST", c.BaseURL+endpoint, &body)
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+	if c.Token != "" {
+		req.Header.Set("Authorization", "Bearer "+c.Token)
+	}
+
+	resp, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	respBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode >= 400 {
+		var apiErr APIError
+		json.Unmarshal(respBytes, &apiErr)
+		if apiErr.Message != "" {
+			return fmt.Errorf("API error (%d): %s", resp.StatusCode, apiErr.Message)
+		}
+		return fmt.Errorf("HTTP error %d", resp.StatusCode)
+	}gi
 
 	if responseTarget != nil {
 		return json.Unmarshal(respBytes, responseTarget)
