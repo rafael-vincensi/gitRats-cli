@@ -49,3 +49,37 @@ var groupsCmd = &cobra.Command{
 		return w.Flush()
 	},
 }
+
+var groupsJoinCmd = &cobra.Command{
+	Use:   "join [invite-code]",
+	Short: "Join a group using its invite code",
+	Args:  cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client, err := api.NewClient()
+		if err != nil {
+			return err
+		}
+		if client.Token == "" {
+			return fmt.Errorf("you are not logged in. Run 'gitrats login' first")
+		}
+
+		var group struct {
+			Name string `json:"name"`
+		}
+
+		code := args[0]
+
+		err = client.DoRequest("POST", fmt.Sprintf("/groups/%s/join", code), nil, &group)
+		if err != nil {
+			return err
+		}
+
+		fmt.Printf("You joined the group '%s'\n", group.Name)
+		return nil
+	},
+}
+
+func init() {
+	groupsCmd.AddCommand(groupsJoinCmd)
+	rootCmd.AddCommand(groupsCmd)
+}
