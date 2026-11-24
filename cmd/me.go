@@ -42,7 +42,7 @@ var meCmd = &cobra.Command{
 		}
 
 		w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
-		fmt.Fprintf(w, "Username:\t%s\n", profile.Username)
+		fmt.Fprintf(w, "\nUsername:\t%s\n", profile.Username)
 		fmt.Fprintf(w, "Name:\t%s\n", profile.Name)
 		fmt.Fprintf(w, "Bio:\t%s\n", profile.Bio)
 		fmt.Fprintf(w, "Github username:\t%s\n", profile.GithubUsername)

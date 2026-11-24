@@ -7,9 +7,10 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "gitrats",
-	Short: "CLI to interact with gitrats API ",
-	Long:  "Manage your check-ins and groups, and track your weekly commits, directly from the terminal",
+	Use:          "gitrats",
+	Short:        "CLI to interact with gitrats API ",
+	Long:         "Manage your check-ins and groups, and track your weekly commits, directly from the terminal",
+	SilenceUsage: true,
 }
 
 func Execute() {
