@@ -1,4 +1,4 @@
-# gitrats-cli
+# gitRats CLI
 
 > Official command-line client for [gitRats](https://github.com/rafael-vincensi/gitrats), a social accountability and gamified check-in platform for developers. Built in Go with Cobra, `gitrats-cli` lets you register, authenticate via email/password or GitHub OAuth, join groups, track your daily streak and weekly GitHub commits, and submit photo-verified coding check-ins straight from your terminal.
 
@@ -6,7 +6,7 @@
 
 <div align="center">
 
-[![Go](https://img.shields.io/badge/Go-1.22+-00ADD8?style=for-the-badge&logo=go&logoColor=white)](https://go.dev/)
+[![Go](https://img.shields.io/badge/Go-1.27-00ADD8?style=for-the-badge&logo=go&logoColor=white)](https://go.dev/)
 [![Cobra](https://img.shields.io/badge/Cobra-CLI-00ADD8?style=for-the-badge&logo=gnubash&logoColor=white)](https://github.com/spf13/cobra)
 [![GitHub OAuth](https://img.shields.io/badge/GitHub_OAuth-181717?style=for-the-badge&logo=github&logoColor=white)](https://docs.github.com/en/apps/oauth-apps)
 [![gitRats API](https://img.shields.io/badge/gitRats-Backend_API-brightgreen?style=for-the-badge&logo=spring&logoColor=white)](https://github.com/rafael-vincensi/gitrats)
@@ -62,7 +62,7 @@ Create a new gitRats account.
 | `--name` | `-n` | No | Display name |
 
 ```bash
-gitrats register -u rafael -n "Rafael Vincensi" -e dev@example.com -p secret123
+gitrats register -u rafinha -n "rafinha goat" -e rafinhagoat@example.com -p secret123
 ```
 
 ---
@@ -139,7 +139,7 @@ gitrats checkin \
 
 ### Prerequisites
 
-- Go 1.22 or higher
+- Go 1.27 or higher
 - A running instance of the [gitRats Backend API](https://github.com/rafael-vincensi/gitrats)
 
 ### Installation
@@ -156,12 +156,6 @@ go install github.com/rafael-vincensi/gitrats-cli@latest
 git clone https://github.com/rafael-vincensi/gitrats-cli.git
 cd gitrats-cli
 go build -o gitrats .
-```
-
-*(Optional)* Move the compiled binary to a directory in your `PATH`:
-
-```bash
-sudo mv gitrats /usr/local/bin/
 ```
 
 ### Environment Variables
