@@ -130,7 +130,7 @@ Publish a new photo-verified coding check-in to a group using its invite code.
 ```bash
 gitrats checkin \
   -g ABC123 \
-  -t "Implemented OAuth flow" \
+  -t "GO" \
   -d "Added --github flag to gitrats login" \
   -i ./screenshot.png
 ```
